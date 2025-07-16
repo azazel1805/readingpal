@@ -100,6 +100,10 @@ app.post('/api/analyze-reading', async (req, res) => {
     }
 });
 
+app.get('/', (req, res) => {
+    res.status(200).send('<h1>Pronunciation Pal API</h1><p>This is the backend service. Please visit the frontend application to use the app.</p>');
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
