@@ -1,4 +1,5 @@
 // frontend/script.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const difficultySelect = document.getElementById('difficulty');
     const getPassageBtn = document.getElementById('get-passage-btn');
@@ -10,14 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingElem = document.getElementById('loading');
     const loadingTextElem = document.getElementById('loading-text');
 
-    // IMPORTANT: Replace with your deployed backend URL in production
-    const BACKEND_URL = '';  
+    // MODIFICATION: All API calls will be prefixed with /api.
+    // This allows Render's rewrite rules to work correctly.
+    const API_BASE_URL = '/api'; 
 
     let recognition;
     let isRecording = false;
     let finalTranscript = '';
 
-    // Check for Web Speech API support
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isRecording = false;
             recordBtn.textContent = 'Start Recording';
             recordBtn.classList.remove('recording');
-            recordBtn.disabled = true; // Disable until analysis is done
+            recordBtn.disabled = true;
             analyzeReading();
         };
 
@@ -71,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         feedbackContainer.classList.add('hidden');
 
         try {
-            const response = await fetch(`${BACKEND_URL}/generate-passage`, {
+            // MODIFICATION: Fetching from the new API path
+            const response = await fetch(`${API_BASE_URL}/generate-passage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ difficulty: difficultySelect.value }),
@@ -114,7 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const originalPassage = passageTextElem.textContent;
 
         try {
-            const response = await fetch(`${BACKEND_URL}/analyze-reading`, {
+            // MODIFICATION: Fetching from the new API path
+            const response = await fetch(`${API_BASE_URL}/analyze-reading`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ originalPassage, userTranscript: finalTranscript }),
@@ -130,12 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Failed to analyze your reading. Please try again.");
         } finally {
             setLoading(false);
-            recordBtn.disabled = false; // Re-enable for another try
+            recordBtn.disabled = false;
         }
     }
 
     function displayFeedback(feedback) {
-        feedbackContentElem.innerHTML = ''; // Clear previous feedback
+        feedbackContentElem.innerHTML = ''; 
 
         const overallP = document.createElement('p');
         overallP.innerHTML = `<strong>Overall:</strong> ${feedback.overallFeedback}`;
