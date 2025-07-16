@@ -52,6 +52,10 @@ app.post('/api/analyze-reading', async (req, res) => {
         res.status(500).json({ error: 'Failed to analyze reading.' });
     }
 });
+app.get('/api/test', (req, res) => {
+  console.log("SUCCESS: /api/test route was hit!");
+  res.status(200).send("Backend test route is working!");
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
