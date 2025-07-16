@@ -1,4 +1,5 @@
 // backend/server.js
+
 const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const dotenv = require('dotenv');
@@ -10,14 +11,15 @@ const app = express();
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(express.json()); // Middleware to parse JSON bodies
 
+// MODIFICATION: Render will set the PORT environment variable.
 const PORT = process.env.PORT || 3000;
 
 // Initialize the Gemini AI model
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-// Endpoint 1: Generate a reading passage
-app.post('/generate-passage', async (req, res) => {
+// MODIFICATION: Added '/api' prefix to the endpoint.
+app.post('/api/generate-passage', async (req, res) => {
     try {
         const { difficulty } = req.body;
 
@@ -45,8 +47,8 @@ app.post('/generate-passage', async (req, res) => {
     }
 });
 
-// Endpoint 2: Analyze the user's reading and provide feedback
-app.post('/analyze-reading', async (req, res) => {
+// MODIFICATION: Added '/api' prefix to the endpoint.
+app.post('/api/analyze-reading', async (req, res) => {
     try {
         const { originalPassage, userTranscript } = req.body;
 
@@ -83,26 +85,12 @@ app.post('/analyze-reading', async (req, res) => {
               "mistakes": []
             }
 
-            Example of a response with mistakes:
-            {
-              "overallFeedback": "Good job! You have a few areas to work on, particularly with vowel sounds.",
-              "mistakes": [
-                { "type": "mispronunciation", "originalWord": "live", "userWord": "leave", "context": "I live in a small apartment." },
-                { "type": "omission", "originalWord": "very", "userWord": null, "context": "The weather is very sunny." },
-                { "type": "insertion", "originalWord": null, "userWord": "like", "context": "I enjoy to reading books." }
-              ]
-            }
-
             Now, analyze the provided texts and return only the JSON object. Do not include any other text or markdown formatting like \`\`\`json.
         `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        let feedbackJsonText = response.text();
-        
-        // Clean up the response to ensure it's valid JSON
-        feedbackJsonText = feedbackJsonText.replace(/```json/g, '').replace(/```/g, '').trim();
-
+        let feedbackJsonText = response.text().replace(/```json/g, '').replace(/```/g, '').trim();
         const feedback = JSON.parse(feedbackJsonText);
         res.json(feedback);
 
@@ -114,5 +102,5 @@ app.post('/analyze-reading', async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
