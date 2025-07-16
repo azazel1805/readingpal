@@ -1,0 +1,26 @@
+# render.yaml
+services:
+  # Backend Service (Node.js)
+  - type: web
+    name: pronunciation-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18 # Use a recent stable Node version
+      - key: GEMINI_API_KEY
+        fromSecret: true # This will be set in the Render dashboard
+
+  # Frontend Service (Static Site)
+  - type: static
+    name: pronunciation-frontend
+    rootDir: frontend
+    # This rewrite rule is crucial. It proxies API calls from the frontend
+    # to the backend to avoid CORS issues in production.
+    rewrites:
+      - source: /generate-passage
+        destination: http://pronunciation-backend:3000/generate-passage
+      - source: /analyze-reading
+        destination: http://pronunciation-backend:3000/analyze-reading
