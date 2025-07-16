@@ -1,4 +1,4 @@
-# render.yaml
+# render.yaml (Corrected Version)
 services:
   # Backend Service (Node.js)
   - type: web
@@ -12,9 +12,11 @@ services:
         value: 18 # Use a recent stable Node version
       - key: GEMINI_API_KEY
         fromSecret: true # This will be set in the Render dashboard
+      - key: PORT # Render uses this to know which port your app listens on
+        value: 3000
 
   # Frontend Service (Static Site)
-  - type: static
+  - type: static_site # <-- THIS IS THE CORRECTION
     name: pronunciation-frontend
     rootDir: frontend
     # This rewrite rule is crucial. It proxies API calls from the frontend
