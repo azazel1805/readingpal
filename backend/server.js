@@ -1,22 +1,27 @@
-// backend/server.js (Correct and Final Version)
+// backend/server.js (New Combined Version)
 
 const express = require('express');
+const path = require('path'); // NEW: Import the path module
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const dotenv = require('dotenv');
-const cors = require('cors');
+// const cors = require('cors'); // REMOVED: CORS is not needed anymore
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+// app.use(cors()); // REMOVED
 app.use(express.json());
+
+// NEW: Serve static files from the 'public' directory
+// This line tells Express to automatically serve files like index.html, style.css, etc.
+app.use(express.static(path.join(__dirname, 'public')));
 
 const PORT = process.env.PORT || 3000;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
-// This is the route we are debugging. Check it carefully.
+// API routes remain the same
 app.post('/api/generate-passage', async (req, res) => {
     try {
         const { difficulty } = req.body;
@@ -34,7 +39,6 @@ app.post('/api/generate-passage', async (req, res) => {
     }
 });
 
-// The second route for analysis.
 app.post('/api/analyze-reading', async (req, res) => {
     try {
         const { originalPassage, userTranscript } = req.body;
@@ -51,10 +55,6 @@ app.post('/api/analyze-reading', async (req, res) => {
         console.error("Error analyzing reading:", error);
         res.status(500).json({ error: 'Failed to analyze reading.' });
     }
-});
-app.get('/api/test', (req, res) => {
-  console.log("SUCCESS: /api/test route was hit!");
-  res.status(200).send("Backend test route is working!");
 });
 
 app.listen(PORT, () => {
