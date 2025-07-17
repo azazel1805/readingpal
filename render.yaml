@@ -1,10 +1,10 @@
-# render.yaml (Final, Simplified Version)
+# render.yaml (Final Version with Free Plan Specified)
 
 services:
   - type: web
     name: pronunciation-pal
+    plan: free # <--- THIS IS THE CRUCIAL ADDITION
     runtime: node
     rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
-    # The envVars section has been completely removed.
