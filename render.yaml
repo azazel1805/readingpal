@@ -1,12 +1,13 @@
-# render.yaml (New Single Service Version)
+# render.yaml (Corrected Single Service Version)
 
 services:
   - type: web
-    name: pronunciation-pal # A single name for the whole app
+    name: pronunciation-pal
     runtime: node
-    rootDir: backend # The root is now the backend directory
+    rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
     envVars:
+      # THIS BLOCK IS NOW CORRECT
       - key: GEMINI_API_KEY
         fromSecret: true
