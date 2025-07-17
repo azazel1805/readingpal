@@ -1,27 +1,12 @@
-# render.yaml (Final Corrected Version)
+# render.yaml (New Single Service Version)
 
 services:
-  # Backend Service (Node.js)
   - type: web
-    name: pronunciation-backend
+    name: pronunciation-pal # A single name for the whole app
     runtime: node
-    rootDir: backend
+    rootDir: backend # The root is now the backend directory
     buildCommand: npm install
     startCommand: node server.js
     envVars:
-      - key: NODE_VERSION
-        value: 18
-      - key: PORT # Render uses this to know which port your app listens on
-        value: 3000
       - key: GEMINI_API_KEY
-        fromSecret: true # This will be set in the Render dashboard
-
-  # Frontend Service (Static Site)
-  - type: static_site
-    name: pronunciation-frontend
-    rootDir: frontend
-    # This rewrite rule is crucial. It proxies API calls from the frontend
-    # to the backend to avoid CORS issues in production.
-    rewrites:
-      - source: /api/:path* # Matches any path starting with /api/
-        destination: http://pronunciation-backend:3000/api/:path* # Forwards to the backend
+        fromSecret: true
