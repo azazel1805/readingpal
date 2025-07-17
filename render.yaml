@@ -1,4 +1,4 @@
-# render.yaml (Corrected Single Service Version)
+# render.yaml (Final, Simplified Version)
 
 services:
   - type: web
@@ -7,7 +7,4 @@ services:
     rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
-    envVars:
-      # THIS BLOCK IS NOW CORRECT
-      - key: GEMINI_API_KEY
-        fromSecret: true
+    # The envVars section has been completely removed.
